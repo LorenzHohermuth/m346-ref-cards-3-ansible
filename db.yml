@@ -1,0 +1,50 @@
+- hosts: db
+  become: yes
+
+  tasks:
+      - name: Get docker compose file from repository
+        get_url:
+            url: https://gitlab.com/bbwrl/m346-ref-card-03/-/raw/main/docker-compose.yml
+            dest: .
+
+      # Docker installation
+      - name: Install aptitude
+        apt:
+            name: aptitude
+            state: latest
+            update_cache: true
+
+      - name: Install required system packages
+        apt:
+            pkg:
+                - apt-transport-https
+                - ca-certificates
+                - curl
+                - software-properties-common
+                - python3-pip
+                - virtualenv
+                - python3-setuptools
+            state: latest
+            update_cache: true
+
+      - name: Add Docker GPG apt Key
+        apt_key:
+            url: https://download.docker.com/linux/ubuntu/gpg
+            state: present
+
+      - name: Add Docker Repository
+        apt_repository:
+            repo: deb https://download.docker.com/linux/ubuntu focal stable
+            state: present
+
+      - name: Update apt and install docker-ce
+        apt:
+            name: docker-ce
+            state: latest
+            update_cache: true
+
+      - name: Build maven package
+        shell: "mvn package"
+
+      - name: Run java application
+        shell: "java -DDB_USERNAME='jokedbuser' -DDB_PASSWORD='123456' -jar target/architecture-refcard-03-0.0.1-SNAPSHOT.jar"

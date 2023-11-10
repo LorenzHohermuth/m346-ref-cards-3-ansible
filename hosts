@@ -1,0 +1,5 @@
+[web]
+actual-cat ansible_host=192.168.67.223 ansible_user=jannis
+
+[db]
+actual-cat ansible_host=192.168.67.223 ansible_user=jannis
