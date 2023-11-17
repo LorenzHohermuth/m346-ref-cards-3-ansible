@@ -8,15 +8,16 @@
             dest: .
 
       # Docker installation
-      - name: Install aptitude
-        apt:
+      - name: Update & Upgrade
+        ansible.builtin.apt:
             name: aptitude
-            state: latest
+            state: present
             update_cache: true
 
-      - name: Install required system packages
-        apt:
-            pkg:
+      - name: Install dependencies
+        ansible.builtin.apt:
+            name:
+                - net-tools
                 - apt-transport-https
                 - ca-certificates
                 - curl
@@ -24,27 +25,58 @@
                 - python3-pip
                 - virtualenv
                 - python3-setuptools
-            state: latest
+                - gnupg-agent
+                - autoconf
+                - dpkg-dev
+                - file
+                - g++
+                - gcc
+                - libc-dev
+                - make
+                - pkg-config
+                - re2c
+                - wget
+            state: present
             update_cache: true
 
       - name: Add Docker GPG apt Key
-        apt_key:
+        ansible.builtin.apt_key:
             url: https://download.docker.com/linux/ubuntu/gpg
             state: present
 
-      - name: Add Docker Repository
-        apt_repository:
-            repo: deb https://download.docker.com/linux/ubuntu focal stable
+      - name: Add repository into sources list
+        ansible.builtin.apt_repository:
+            repo: deb https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable
             state: present
+            filename: docker
 
-      - name: Update apt and install docker-ce
-        apt:
-            name: docker-ce
-            state: latest
+      - name: Install Docker
+        ansible.builtin.apt:
+            name:
+                - docker-ce
+                - docker-ce-cli
+                - docker-compose
+                - containerd.io
+            state: present
             update_cache: true
 
-      - name: Build maven package
-        shell: "mvn package"
+      - name: Setup docker user
+        ansible.builtin.user:
+            name: jannis
+            groups: "docker"
+            append: true
 
-      - name: Run java application
-        shell: "java -DDB_USERNAME='jokedbuser' -DDB_PASSWORD='123456' -jar target/architecture-refcard-03-0.0.1-SNAPSHOT.jar"
+      - name: Install Docker module for Python
+        ansible.builtin.pip:
+            name: docker
+
+      - name: Restart Docker
+        ansible.builtin.service:
+            name: docker
+            state: restarted
+            enabled: true
+
+      - name: Create docker containers
+        community.docker.docker_compose:
+            project_src: .
+        register: output
