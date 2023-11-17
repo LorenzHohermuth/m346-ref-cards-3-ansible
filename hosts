@@ -1,5 +1,5 @@
 [web]
-actual-cat ansible_host=192.168.67.223 ansible_user=jannis
+web1 ansible_host=<ip> ansible_user=<user>
 
 [db]
-actual-cat ansible_host=192.168.67.223 ansible_user=jannis
+db1 ansible_host=<ip> ansible_user=<user>
