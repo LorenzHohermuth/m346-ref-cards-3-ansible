@@ -4,7 +4,7 @@ After=syslog.target
 
 [Service]
 User=myuser
-ExecStart=/usr/bin/java -jar /path/to/your/application.jar
+ExecStart=java -jar /home/myuser/m346-ref-card-03/target/architecture-refcard-03-0.0.1-SNAPSHOT.jar
 Restart=always
 RestartSec=30
 SuccessExitStatus=143
