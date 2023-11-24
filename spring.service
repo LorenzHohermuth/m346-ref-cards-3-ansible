@@ -1,0 +1,13 @@
+[Unit]
+Description=M346 Spring Boot Application
+After=syslog.target
+
+[Service]
+User=myuser
+ExecStart=/usr/bin/java -jar /path/to/your/application.jar
+Restart=always
+RestartSec=30
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target
