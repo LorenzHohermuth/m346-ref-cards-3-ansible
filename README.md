@@ -21,19 +21,18 @@ ssh-keygen
 
 ## Configure cloud init
 
--   Adjust name
 -   Copy SSH key (in `.ssh` folder in root directory) and paste it into `cloud-init.yml`
 
 ## Setup 2 MaaS VMs
 
 -   Visit https://maas.bbw-it.ch/maas-user.php
 -   Start 2 VMs with the configured `cloud-init.yml`
+-   Are now available under `myuser@<ip>`
 
 ## Insert VMs into hosts file
 
 -   Open the `hosts` file
 -   Replace the two `<ip>` values with the VMs IP's
--   Replace the two `<user>` values your configured user in `cloud-init.yml`
 
 ## Final steps
 
